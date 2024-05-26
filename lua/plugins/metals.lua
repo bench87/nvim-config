@@ -8,16 +8,33 @@ return {
     },
   },
   ft = { "scala", "sbt", "java" },
+  keys = {
+    {
+      "<leader>me",
+      function()
+        require("telescope").extensions.metals.commands()
+      end,
+      desc = "Metals commands",
+    },
+    {
+      "<leader>mc",
+      function()
+        require("metals").compile_cascade()
+      end,
+      desc = "Metals compile cascade",
+    },
+  },
   opts = function()
     local map = vim.keymap.set
     local metals_config = require("metals").bare_config()
 
     metals_config.settings = {
-      showImplicitArguments = true,
+      showImplicitArguments = false,
       showInferredType = true,
-      showImplicitConversionsAndClasses = true,
+      showImplicitConversionsAndClasses = false,
     }
-    metals_config.init_options.statusBarProvider = "on"
+
+    metals_config.init_options.statusBarProvider = "off"
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.completion.completionItem.snippetSupport = true
     metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -42,12 +59,12 @@ return {
         },
       },
     }
+
     metals_config.on_attach = function(client, bufnr)
       require("metals").setup_dap()
 
       -- LSP mappings
       map("n", "gD", vim.lsp.buf.definition)
-      map("n", "K", vim.lsp.buf.hover)
       map("n", "gi", vim.lsp.buf.implementation)
       map("n", "gr", vim.lsp.buf.references)
       map("n", "gds", vim.lsp.buf.document_symbol)
@@ -63,20 +80,20 @@ return {
       end)
 
       -- all workspace diagnostics
-      map("n", "<leader>aa", vim.diagnostic.setqflist)
+      map("n", "<leader>aa", vim.diagnostic.setqflist, { desc = "All workspace diagnostics" })
 
       -- all workspace errors
       map("n", "<leader>ae", function()
         vim.diagnostic.setqflist({ severity = "E" })
-      end)
+      end, { desc = "All workspace errors" })
 
       -- all workspace warnings
       map("n", "<leader>aw", function()
         vim.diagnostic.setqflist({ severity = "W" })
-      end)
+      end, { desc = "All workspace warnings" })
 
       -- buffer diagnostics only
-      map("n", "<leader>d", vim.diagnostic.setloclist)
+      map("n", "<leader>d", vim.diagnostic.setloclist, { desc = "Buffer diagnostics" })
 
       map("n", "[c", function()
         vim.diagnostic.goto_prev({ wrap = false })
