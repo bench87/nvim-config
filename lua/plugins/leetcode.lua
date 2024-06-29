@@ -6,10 +6,15 @@ return {
   },
   opts = {
     arg = leet_arg,
+    lang = "scala",
     hooks = {
       ["enter"] = {},
 
-      ["question_enter"] = {},
+      ["question_enter"] = {
+        function()
+          vim.cmd("Copilot disable")
+        end,
+      },
 
       ["leave"] = {},
     },
