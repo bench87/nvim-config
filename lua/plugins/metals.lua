@@ -27,17 +27,16 @@ return {
   opts = function()
     local map = vim.keymap.set
     local metals_config = require("metals").bare_config()
-
-    metals_config.settings = {
-      showImplicitArguments = false,
-      showInferredType = true,
-      showImplicitConversionsAndClasses = false,
-    }
-
-    metals_config.init_options.statusBarProvider = "off"
     local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.completion.completionItem.snippetSupport = true
+    metals_config.settings = {
+      showImplicitArguments = true,
+      showInferredType = true,
+      showImplicitConversionsAndClasses = true,
+    }
     metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+    -- metals_config.settings.scalafmtConfigPath = "/Users/mason/.scalafmt.conf"
+    metals_config.init_options.statusBarProvider = "off"
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
     local dap = require("dap")
 
     dap.configurations.scala = {
@@ -64,9 +63,9 @@ return {
       require("metals").setup_dap()
 
       -- LSP mappings
-      map("n", "gD", vim.lsp.buf.definition)
-      map("n", "gi", vim.lsp.buf.implementation)
-      map("n", "gr", vim.lsp.buf.references)
+      map("n", "gD", vim.lsp.buf.definition, { desc = "Go to Definition" })
+      map("n", "gi", vim.lsp.buf.implementation, { desc = "Go to Implementation" })
+      map("n", "gr", vim.lsp.buf.references, { desc = "Find References" })
       map("n", "gds", vim.lsp.buf.document_symbol)
       map("n", "gws", vim.lsp.buf.workspace_symbol)
       map("n", "<leader>cl", vim.lsp.codelens.run)
